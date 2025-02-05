@@ -13,15 +13,9 @@ name: "CodeQL Advanced"
 
 on:
   push:
-    branches-ignore:
-      - 'main'
-      - 'master'
-    branches: [ "**" ]
+    branches: [ "*" ]
   pull_request:
-      branches-ignore:
-      - 'main'
-      - 'master'
-      branches: [ "**" ]
+    branches: [ "*" ]
 
 jobs:
   analyze:
