@@ -121,7 +121,7 @@ Se pretende hacer un análisis preliminar de los posibles riesgos de seguridad q
 - El módulo de fakenodo/zenodo se conecta a un servicio externo. Esto plantea ciertos problemas, como puede ser el [DNS Spoofing](https://www.ccn-cert.cni.es/publico/seriesCCN-STIC/series/400-Guias_Generales/401-glosario_abreviaturas/index.html?n=899.html)
 - El módulo teams aparentemente no plantea demasiado riesgo, por lo que se deberá de revisar menos.
 
-Esto es simplemente un ejemplo. Se debería también de analizar cuales módulos pueden leer o escribir archivos en el servidor y tener acceso a la base de datos. 
+Esto es simplemente un ejemplo. Se debería también de analizar cuáles módulos pueden leer o escribir archivos en el servidor y tener acceso a la base de datos. 
 
 ## Estructura de ramas
 Se plantea la siguiente estructura de ramas para hacer una demostración:
@@ -139,19 +139,19 @@ Explicación de la configuración:
     - En mi caso, he decidido elegir la opción de configurar manualmente yo el actions para cambiar los momentos en los que se ejecuta. Por defecto me salta que se ejecuta cuando se hacen push o prs a main, o cada cierto tiempo. La opción de que se ejecute cada cierto tiempo puede ser interesante, pero también puede ser redundante e incluso gastar todos los recursos que ofrece GitHub Actions gratuito. 
     - ![CodeQL default2](images/codeql-default-conf.png)
 
-    - Por esto, en un primer momento lo modifiqué para que solo se ejecutase cuando se hacían prs o pushes a develop. Sin embargo, una vez probada esta configuración, también probe que se lanzase cuando se hacía un push o una pull request en cualquier rama. El resultado no arrojó mucha diferencia(además de que es un workflow que puede tardar).
-- Además del workflow de CodeQL, he decidido implementar el workflow de Snyk, que también se encuentra entre los que ofrece GitHub. Sin embargo, en este si que he hecho más modificaciones(eliminando, por ejemplo, que no se suba el análisis a la plataforma para evitar así que el equipo tenga que irse a otra plataforma para ver los resultados) y he añadido el workflow que viene en su [documentación]( https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-ci-cd-integrations/github-actions-for-snyk-setup-and-checking-for-vulnerabilities/snyk-python-action) (del que he hablado anteriormente) como un job más. Para usar snyk se tiene que hacer una cuenta y obtener un token para usarlo en el workflow(en account https://app.snyk.io/account).
+    - Por esto, en un primer momento lo modifiqué para que solo se ejecutase cuando se hacían prs o pushes a develop. Sin embargo, una vez probada esta configuración, también probé que se lanzase cuando se hacía un push o una pull request en cualquier rama. El resultado no arrojó mucha diferencia(además de que es un workflow que puede tardar).
+- Además del workflow de CodeQL, he decidido implementar el workflow de Snyk, que también se encuentra entre los que ofrece GitHub. Sin embargo, en este sí que he hecho más modificaciones(eliminando, por ejemplo, que no se suba el análisis a la plataforma para evitar así que el equipo tenga que irse a otra plataforma para ver los resultados) y he añadido el workflow que viene en su [documentación]( https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-ci-cd-integrations/github-actions-for-snyk-setup-and-checking-for-vulnerabilities/snyk-python-action) (del que he hablado anteriormente) como un job más. Para usar snyk se tiene que hacer una cuenta y obtener un token para usarlo en el workflow(en account https://app.snyk.io/account).
     - Como con CodeQL, en un primer momento seleccionñe que solo se ejecutase cuando se hacían prs o pushes a develop y después lo cambié. Obtuve los mismos resultados.
 - Para hacer un análisis dinámico he utilizado la herramienta de código abierto ZAP. He hecho un workflow [basándome en el que indiqué anteriormente](https://github.com/zaproxy/action-full-scan). Lo que he añadido es que el workflow ejecute uvlhub con docker para que la herramienta ZAP pueda analizar la versión de desarrollo. 
     - Este workflow lo configuré para que solo se ejecutase cuando se hacían prs o pushes a develop y no lo cambié porque tardaba demasiado tiempo.
-    - No creo que fuese recomendable utilizar este workflow para que también analice periodicamente la versión de producción, porque:
+    - No creo que fuese recomendable utilizar este workflow para que también analice periódicamente la versión de producción, porque:
         - Consume mucho tiempo.
         - No estaría bien mostrar a todos los visitantes del repositorio las vulnerabilidades que tiene la versión de producción. 
             - Esto se podría solucionar teniendo un repositorio privado y mejorando el plan. 
-            - También se podría tener una máquina a parte que haga los análisis y no publique los resultados. 
+            - También se podría tener una máquina aparte que haga los análisis y no publique los resultados. 
     - El workflow implementado crea una issue con los resultados y también genera un zip con los resultados para que se pueda analizar correctamente. 
         - **Hay que tener en cuenta que como hace el análisis a localhost, siempre va a dar el falso positivo de que no se utiliza HTTPS**.
-- Otra funcionalidada de GitHub que he añadido es la de revisar las dependencias con dependabot. En este caso solo he puesto que me notifique las alertas, aunque también hay opciones para que directamente te abra pull requests solucionando los errores.
+- Otra funcionalidad de GitHub que he añadido es la de revisar las dependencias con dependabot. En este caso solo he puesto que me notifique las alertas, aunque también hay opciones para que directamente te abra pull requests solucionando los errores.
     - He decidido no añadir otra herramienta de las listadas en la guía de OWASP porque sería redundante.
 
 - He añadido un hook y una funcionalidad a rosemary para controlar los secretos a partir de la herramienta de Yelp **[detect-secrets](https://github.com/Yelp/detect-secrets)**:
@@ -224,6 +224,7 @@ Estas son las conclusiones a las que he llegado tras desarrollar este trabajo:
 - El DevSecOps es una práctica que puede solucionar problemas de seguridad mucho antes de que lleguen a producción.
 - No encuentro que hacer que los workflows que hacen análisis de vulnerabilidades salten por cada push sea beneficioso porque pueden llegar a tardar mucho y consumir todos los recursos.
 - Sí encuentro beneficioso el tener un servidor privado que haga análisis de seguridad automáticos a la versión de producción.
+- Se debería de investigar formas de reducir el tiempo de ejecución de los workflows de seguridad. Sobre todo para los análisis dinámicos.
 
 # Bibliografía no citada anteriormente
 - [Link](https://openaccess.uoc.edu/bitstream/10609/132367/6/jjpadronhTFM0621memoria.pdf): De aquí saqué algunas ideas como la de seguir la guía para DevSecOps de OWASP. Conocía que existía y lo que era OWASP pero desconocía que tuviera una guía DevSecOps. Por otro lado, también me sirvió un poco para criticar mi caso práctico.
