@@ -125,7 +125,7 @@ Esto es simplemente un ejemplo. Se debería también de analizar cuáles módulo
 
 ## Estructura de ramas
 Se plantea la siguiente estructura de ramas para hacer una demostración:
-- **Rama main**: Rama principal lista para entregarse. En la rama main no deben de haber vulnerabilidades no contempladas o analizadas. Cuando se hace un push o una pull request a main se despliega en render en la url [https://uvlhub-delsanrub.onrender.com](https://uvlhub-delsanrub.onrender.com). En algún momento daré de baja el servicio.
+- **Rama main**: Rama principal lista para entregarse. En la rama main no deben de haber vulnerabilidades no contempladas o analizadas. Cuando se hace un push o una pull request a main se ejecutan workflows que, entre otras cosas, ejecutan los tests y despliega en render en la url [https://uvlhub-delsanrub.onrender.com](https://uvlhub-delsanrub.onrender.com). En algún momento daré de baja el servicio.
 - **Rama develop**: Rama de desarrollo. En específico, en esta demostración de un workflow de DevSecOps, es el último momento en el que se deberían de analizar los problemas de seguridad. Se deberá de unir a main mediante pull request.
     - **Ramas features con nombre descriptivo**: Ramas para desarrollar alguna funcionalidad en específico. Cuando se complete la funcionalidad se deben de juntar a la rama develop mediante una Pull Request. En esta Pull Request se deben de pasar los workflows de seguridad.
 
