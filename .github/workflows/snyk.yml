@@ -76,6 +76,10 @@ jobs:
 
   snyk-python-action:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read 
+      security-events: write 
+      actions: read 
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
